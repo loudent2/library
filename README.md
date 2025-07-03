@@ -1,95 +1,157 @@
-# Spring Boot Gradle Template
+# Loudent Library Service
 
-This is a basic Spring Boot template using Gradle as the build tool. It serves as a starting point for new Java projects.
+A showcase Java Spring Boot application for managing a library catalog, user accounts, and borrowing activity. This service demonstrates clean architecture, asynchronous operations, unit test coverage, OpenAPI integration, and modern Java development practices.
 
-## 📌 Features
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Run Locally](#run-locally)
+  - [OpenAPI Code Generation](#openapi-code-generation)
+  - [Build Docker Image](#build-docker-image)
+- [Design Principles](#design-principles)
+- [Project Structure](#project-structure)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+
+- **Book Catalog**
+
+  - Search by title
+  - Lookup by ISBN
+  - Tracks multiple instances of each book via compound book IDs: `<isbn>.<uniqueId>`
+
+- **User Accounts**
+
+  - Fetch user by account number
+  - Lists borrowed books (resolved via Activity service)
+
+- **Activity Tracking**
+
+  - Check-in and check-out of individual book instances
+  - Resilient handling of partial failures with detailed per-book results
+
+- **Observability**
+
+  - Micrometer metrics for sync and async method execution
+  - Log4j2 logging with per-request traceability
+
+- **API Design**
+
+  - OpenAPI 3.0-based interface-first development
+  - Swagger annotations on models and interfaces
+  - CompletableFuture-based async controllers
+
+---
+
+## Technology Stack
+
 - Java 17
-- Spring Boot 3.2.0
-- Gradle for dependency management
-- Basic Spring Boot application setup
-- Pre-configured `.gitignore`
-- Sample unit test
+- Spring Boot 3.4
+- DynamoDB Enhanced Client
+- OpenAPI Generator 7.x
+- Micrometer + Log4j2
+- JUnit 5 + Mockito
+- Spotless (Google Java Format)
+- Jib (for Docker image builds)
 
-## 🚀 Getting Started
+---
 
-### **1. Clone the Repository**
-```sh
-git clone https://github.com/your-username/template-project.git
-cd template-project
-```
+## Getting Started
 
-### 2. Rename the Project
-If you are creating a new project from this template, update the following:
+### Prerequisites
 
-Modify settings.gradle:
-```gradle
-rootProject.name = 'your-project-name'
-```
+- Java 17
+- Docker (optional: for container builds)
 
-Modify build.gradle
-```gradle
-group = 'com.yourcompany'
-```
-#### Rename the Java Package
-Update the package structure under src/main/java/com/loudent/template/ to match your new project structure.
+### Run Locally
 
-For example, if your new package name is com.yourcompany.newproject, move the files accordingly:
-```swift
-src/main/java/com/yourcompany/newproject/
-```
-
-Then update the package declaration in TemplateApplication.java:
-```java
-package com.yourcompany.newproject;
-```
-
-Refactor Imports (Optional)
-If using an IDE like IntelliJ IDEA or Eclipse, you can use the Refactor > Rename feature to rename packages automatically.
-
-### 3. Run the Application
-```sh
+```bash
+# Build and run the service
 ./gradlew bootRun
 ```
 
-### 4. Run Tests
-```sh
-./gradlew test
-```
-s
-### 5. Create a New Git Repository
-If you are using this template for a new project:
-```sh
-rm -rf .git
-git init
-git add .
-git commit -m "Initial commit from template"
-git remote add origin https://github.com/your-username/your-new-repo.git
-git push -u origin main
+### OpenAPI Code Generation
+
+This project uses interface-first development with OpenAPI 3.x. To generate the Java API interfaces and models:
+
+```bash
+./gradlew generateLibraryApi
 ```
 
-## Project structure
-```swift
-template-project/
-│── src/
-│   ├── main/
-│   │   ├── java/com/loudent/template/
-│   │   │   ├── TemplateApplication.java
-│   ├── test/
-│   │   ├── java/com/loudent/template/
-│   │   │   ├── TemplateApplicationTest.java
-│── build.gradle
-│── settings.gradle
-│── .gitignore
-│── README.md
+To remove previously generated sources:
+
+```bash
+./gradlew cleanOpenApiGenerated
 ```
 
-## 🔧 Customization
- - Change group in build.gradle to match your package naming convention.
- - Update application.yml with your configurations.
- - Extend this template by adding logging, database support, or security as needed.
+Run `generateLibraryApi` whenever the OpenAPI spec (`spec/libraryservice.yml`) changes.
 
+### Build Docker Image
 
+```bash
+./gradlew jibDockerBuild
+```
 
+---
 
+## Design Principles
 
+- **Interface-First APIs**: All endpoints are defined via OpenAPI and implemented manually.
+- **Compound Book IDs**: The format `<isbn>.<uniqueId>` enables referencing specific book copies across the system.
+- **Async & Resilience**: Activity operations are non-blocking and tolerate individual failures gracefully.
+- **Clean Code**: 100% unit test coverage, Spotless formatting, strict warning flags.
+- **No Dockerfile Needed**: Jib builds images directly from your build configuration.
+
+---
+
+## Project Structure
+
+```text
+src/
+  main/java/com/loudent/library/
+    api/               # REST controllers
+    service/           # Business logic
+    dao/               # Data access (DynamoDB)
+    oas/codegen/       # OpenAPI-generated interfaces and models
+    aspect/            # Method timing and logging aspects
+    config/            # Application configuration
+    util/              # Shared utilities
+```
+
+---
+
+## Testing
+
+- Run all tests:
+
+  ```bash
+  ./gradlew test
+  ```
+
+- View coverage report:
+
+  ```bash
+  open build/reports/jacoco/test/html/index.html
+  ```
+
+---
+
+## Contributing
+
+This project is designed for demonstration purposes and is not accepting external contributions.
+
+---
+
+## License
+
+MIT License. See `LICENSE` file for details.
 

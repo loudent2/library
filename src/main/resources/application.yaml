@@ -1,0 +1,57 @@
+info:
+  component: librarian
+  version: 0.1
+server:
+  port: 8080
+spring:
+  application:
+    name: library
+  web:
+    servlet:
+      context-path: /api/v1
+  cloud:
+    openfeign:
+      micrometer:
+        enabled: true
+aws:
+  dynamodb:
+    endpoint: http://localhost:8000
+    table-prefix: dev_
+    region: us-west-2
+    access-key: dummy
+    secret-key: dummy
+service:
+  concurrency: 125
+---
+spring:
+  config:
+    activate:
+      on-profile: ide
+
+service:
+  env: ide
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+service:
+  env: local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+service:
+  env: dev
+aws:
+  dynamodb:
+    endpoint: http://dynamodb-local:8000
+    table-prefix: dev_
+    region: us-west-2
+    access-key: dummy
+    secret-key: dummy   
