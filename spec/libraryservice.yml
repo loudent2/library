@@ -1,0 +1,303 @@
+openapi: 3.0.3
+info:
+  title: Library API
+  description: API for retrieving catalog and user information
+  version: 1.0.0
+
+servers:
+  - url: https://api.library.com/v1
+
+paths:
+  /catalog/isbn/{isbn}:
+    get:
+      summary: Get catalog item by ISBN
+      operationId: getBookByISBN
+      parameters:
+        - name: isbn
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[0-9]{13}$"
+      responses:
+        "200":
+          description: Catalog details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogResponse"
+        "404":
+          description: Catalog item not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /catalog/title:
+    post:
+      summary: Get catalog item by title
+      operationId: getBookByTitle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetBookByTitleRequest"
+      responses:
+        "200":
+          description: Catalog details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogResponse"
+        "404":
+          description: Catalog item not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /catalog/search:
+    post:
+      summary: Search for catalog items
+      operationId: searchCatalog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CatalogSearchRequest"
+      responses:
+        "200":
+          description: List of matching catalog items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CatalogResponse"
+        "400":
+          description: Invalid search parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /user/{accountNumber}:
+    get:
+      summary: Get user details by account number
+      operationId: getUserByAccountNumber
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /activity/checkout:
+    post:
+      summary: Check out books to a user
+      operationId: checkoutBooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutRequest"
+      responses:
+        "200":
+          description: Book checkout results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookOperationResult"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /activity/checkin:
+    post:
+      summary: Check in returned books
+      operationId: checkinBooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckinRequest"
+      responses:
+        "200":
+          description: Book checkin results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookOperationResult"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    CatalogRequest:
+      type: object
+      required:
+        - title
+      properties:
+        isbn:
+          type: string
+          pattern: "^[0-9]{13}$"
+          minLength: 13
+          maxLength: 13
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+    
+    GetBookByTitleRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+    
+    CatalogResponse:
+      type: object
+      properties:
+        isbn:
+          type: string
+        title:
+          type: string
+        authorLastName:
+          type: string
+        authorFirstName:
+          type: string
+        totalCopies:
+          type: integer
+        availableCopies:
+          type: integer
+
+    UserResponse:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        memberSince:
+          type: string
+          format: date
+        borrowedBooks:
+          type: array
+          items:
+            $ref: "#/components/schemas/BorrowedBook"
+
+    BorrowedBook:
+      type: object
+      properties:
+        bookId:
+          type: string
+        title:
+          type: string
+        checkOutDate:
+          type: string
+          format: date
+        dueByDate:
+          type: string
+          format: date
+
+    ErrorResponse:
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+          format: int32
+
+    CatalogSearchRequest:
+      type: object
+      properties:
+        authorFirstName:
+          type: string
+          minLength: 1
+          maxLength: 255
+        authorLastName:
+          type: string
+          minLength: 1
+          maxLength: 255
+      additionalProperties: false
+
+    CheckoutRequest:
+      type: object
+      required:
+        - accountNumber
+        - bookIds
+      properties:
+        accountNumber:
+          type: string
+        bookIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+
+    CheckinRequest:
+      type: object
+      required:
+        - bookIds
+      properties:
+        bookIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+
+
+    BookOperationResult:
+      type: object
+      properties:
+        bookId:
+          type: string
+        title:
+          type: string
+        checkOutDate:
+          type: string
+          format: date
+        dueByDate:
+          type: string
+          format: date
+        notes:
+          type: string
+          description: Status message like "Ok", "Already checked in", or error description.
+
