@@ -189,6 +189,14 @@ tasks.register('cleanOpenApiGenerated', Delete) {
 	delete "src/main/java/${librarySpecPackage.replace('.', '/')}/oas"
 }
 
+tasks.register('generateLibraryDocs', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	group = "openapi tools"
+	description = "Generates API documentation from OpenAPI spec"
+	generatorName.set("html")
+	inputSpec.set("$rootDir/spec/libraryservice.yml")
+	outputDir.set("$buildDir/generated/library-docs")
+}
+
 jib {
 	dockerClient {
 		executable = '/usr/local/bin/docker'

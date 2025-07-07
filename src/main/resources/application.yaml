@@ -22,6 +22,13 @@ aws:
     secret-key: dummy
 service:
   concurrency: 125
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
 ---
 spring:
   config:
@@ -48,10 +55,8 @@ spring:
 
 service:
   env: dev
+ 
 aws:
   dynamodb:
-    endpoint: http://dynamodb-local:8000
-    table-prefix: dev_
-    region: us-west-2
-    access-key: dummy
-    secret-key: dummy   
+    region: ${AWS_REGION:us-east-1}
+    endpoint: ${AWS_DYNAMODB_ENDPOINT:http://dynamodb-local:8000}

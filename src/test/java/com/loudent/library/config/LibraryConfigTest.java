@@ -1,6 +1,7 @@
 package com.loudent.library.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.concurrent.ExecutorService;
@@ -51,9 +52,19 @@ class LibraryConfigTest {
     var customizer = config.metricsCommonTags();
     assertThat(customizer).isNotNull();
 
-    // Just execute the lambda to satisfy Jacoco
     customizer.customize(meterRegistry);
+  }
 
-    // No need to assert internal tags unless you're validating behavior (not just coverage)
+  @Test
+  void shutdownExecutors_shouldShutdownAllExecutors() {
+    LibraryConfig config = new LibraryConfig();
+
+    // Manually call the methods to instantiate executors
+    ExecutorService service = config.getServiceExecutorService(meterRegistry);
+
+    // Shutdown
+    config.shutdownExecutors();
+
+    assertTrue(service.isShutdown());
   }
 }

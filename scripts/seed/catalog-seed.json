@@ -1,0 +1,116 @@
+{
+  "dev_Catalog": [
+    {
+      "PutRequest": {
+        "Item": {
+          "isbn": { "S": "9781234567890" },
+          "title": { "S": "Sample Book" },
+          "authorLastName": { "S": "Doe" },
+          "authorFirstName": { "S": "John" },
+          "bookIds": { "L": [
+            { "S": "9781234567890-0" },
+            { "S": "9781234567890-1" },
+            { "S": "9781234567890-2" }
+          ]}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "isbn": { "S": "9781111111111" },
+          "title": { "S": "Data Structures" },
+          "authorLastName": { "S": "Doe" },
+          "authorFirstName": { "S": "John" },
+          "bookIds": { "L": [
+            { "S": "9781111111111-0" },
+            { "S": "9781111111111-1" },
+            { "S": "9781111111111-2" },
+            { "S": "9781111111111-3" },
+            { "S": "9781111111111-4" }
+          ]}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "isbn": { "S": "9782222222222" },
+          "title": { "S": "Machine Learning 101" },
+          "authorLastName": { "S": "Lopez" },
+          "authorFirstName": { "S": "Carlos" },
+          "bookIds": { "L": [
+            { "S": "9782222222222-0" },
+            { "S": "9782222222222-1" },
+            { "S": "9782222222222-2" },
+            { "S": "9782222222222-3" }
+          ]}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "isbn": { "S": "9783333333333" },
+          "title": { "S": "Clean Code" },
+          "authorLastName": { "S": "Martin" },
+          "authorFirstName": { "S": "Robert" },
+          "bookIds": { "L": [
+            { "S": "9783333333333-0" },
+            { "S": "9783333333333-1" },
+            { "S": "9783333333333-2" },
+            { "S": "9783333333333-3" },
+            { "S": "9783333333333-4" },
+            { "S": "9783333333333-5" }
+          ]}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "isbn": { "S": "9784444444444" },
+          "title": { "S": "The Pragmatic Programmer" },
+          "authorLastName": { "S": "Hunt" },
+          "authorFirstName": { "S": "Andrew" },
+          "bookIds": { "L": [
+            { "S": "9784444444444-0" },
+            { "S": "9784444444444-1" }
+          ]}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "isbn": { "S": "9785555555555" },
+          "title": { "S": "Effective Java" },
+          "authorLastName": { "S": "Bloch" },
+          "authorFirstName": { "S": "Joshua" },
+          "bookIds": { "L": [
+            { "S": "9785555555555-0" },
+            { "S": "9785555555555-1" },
+            { "S": "9785555555555-2" }
+          ]}
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "isbn": { "S": "9786666666666" },
+          "title": { "S": "Design Patterns" },
+          "authorLastName": { "S": "Gamma" },
+          "authorFirstName": { "S": "Erich" },
+          "bookIds": { "L": [
+            { "S": "9786666666666-0" },
+            { "S": "9786666666666-1" },
+            { "S": "9786666666666-2" },
+            { "S": "9786666666666-3" },
+            { "S": "9786666666666-4" }
+          ]}
+        }
+      }
+    }
+  ]
+}
