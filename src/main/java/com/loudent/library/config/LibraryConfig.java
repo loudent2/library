@@ -3,6 +3,7 @@ package com.loudent.library.config;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
+import jakarta.annotation.PreDestroy;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,6 +18,9 @@ import org.springframework.context.annotation.Configuration;
 public class LibraryConfig {
   private static final String SERVICE = "service";
   private static final String ENVIRONMENT = "environment";
+
+  private ExecutorService controllerExecutor;
+  private ExecutorService serviceExecutor;
 
   @Value("${info.component:library}")
   private String componentName;
@@ -38,13 +42,27 @@ public class LibraryConfig {
 
   @Bean(name = "controllerThreadPool")
   public ExecutorService getControllerExecutorService(MeterRegistry meterRegistry) {
-    return ExecutorServiceMetrics.monitor(
-        meterRegistry, Executors.newFixedThreadPool(numberOfThreads), "controllerThreadPool");
+    controllerExecutor =
+        ExecutorServiceMetrics.monitor(
+            meterRegistry, Executors.newFixedThreadPool(numberOfThreads), "controllerThreadPool");
+    return controllerExecutor;
   }
 
   @Bean(name = "serviceThreadPool")
   public ExecutorService getServiceExecutorService(MeterRegistry meterRegistry) {
-    return ExecutorServiceMetrics.monitor(
-        meterRegistry, Executors.newWorkStealingPool(), "serviceThreadPool");
+    serviceExecutor =
+        ExecutorServiceMetrics.monitor(
+            meterRegistry, Executors.newWorkStealingPool(), "serviceThreadPool");
+    return serviceExecutor;
+  }
+
+  @PreDestroy
+  public void shutdownExecutors() {
+    if (controllerExecutor != null) {
+      controllerExecutor.shutdown();
+    }
+    if (serviceExecutor != null) {
+      serviceExecutor.shutdown();
+    }
   }
 }

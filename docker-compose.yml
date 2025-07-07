@@ -1,0 +1,38 @@
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dynamodb-data:/home/dynamodblocal/data
+ 
+
+  dynamodb-init:
+    image: amazon/aws-cli:2.13.4
+    depends_on:
+      - dynamodb-local
+    environment:
+      AWS_ACCESS_KEY_ID: dummy
+      AWS_SECRET_ACCESS_KEY: dummy
+      AWS_REGION: us-west-2      
+    volumes:
+      - ./scripts/seed:/seed
+      - ./scripts/dynamodb-init.sh:/dynamodb-init.sh
+    entrypoint: [ "sh", "-c", "/dynamodb-init.sh" ]
+ 
+
+  library:
+    image: loudent.project/library:latest
+    ports:
+      - "8080:8080"
+    environment:
+      AWS_REGION: ${AWS_DYNAMODB_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_DYNAMODB_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_DYNAMODB_SECRET_KEY}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker} 
+      
+    depends_on:
+      - dynamodb-local
+    profiles: ["library"]
