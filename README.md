@@ -1,7 +1,7 @@
 # Loudent Library Service
 
-[![Build](https://github.com/loudent/library/actions/workflows/ci.yml/badge.svg)](https://github.com/loudent/library/actions)
-[![codecov](https://codecov.io/gh/loudent/library/branch/main/graph/badge.svg)](https://codecov.io/gh/loudent/library) 
+[![Build](https://github.com/loudent/library/actions/workflows/ci.yml/badge.svg)](https://github.com/loudent2/library/actions)
+[![codecov](https://codecov.io/gh/loudent2/library/branch/main/graph/badge.svg)](https://codecov.io/gh/loudent2/library) 
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 
 A showcase Java Spring Boot application for managing a library catalog, user accounts, and borrowing activity. This service demonstrates clean architecture, asynchronous operations, unit test coverage, OpenAPI integration, and modern Java development practices.
