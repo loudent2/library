@@ -57,14 +57,21 @@ class LibraryConfigTest {
 
   @Test
   void shutdownExecutors_shouldShutdownAllExecutors() {
-    LibraryConfig config = new LibraryConfig();
-
     // Manually call the methods to instantiate executors
+    ExecutorService controller = config.getControllerExecutorService(meterRegistry);
     ExecutorService service = config.getServiceExecutorService(meterRegistry);
 
     // Shutdown
     config.shutdownExecutors();
 
+    assertTrue(controller.isShutdown());
     assertTrue(service.isShutdown());
+  }
+
+  @Test
+  void shutdownExecutors_shouldShutdownAllExecutorAreNull() {
+    // Shutdown without calling any of the executors.
+    config.shutdownExecutors();
+    assert (true);
   }
 }
