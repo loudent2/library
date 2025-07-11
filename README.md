@@ -80,6 +80,7 @@ A showcase Java Spring Boot application for managing a library catalog, user acc
 
 ---
 
+
 ## Getting Started
 
 ### Prerequisites
@@ -89,12 +90,24 @@ A showcase Java Spring Boot application for managing a library catalog, user acc
 
 ---
 
+### Build the Application
+
+Before running the service locally or in Docker, build the application and generate the OpenAPI sources:
+
+```bash
+./gradlew clean generateLibraryApi build
+```
+
+You should re-run `generateLibraryApi` whenever the OpenAPI spec (`spec/libraryservice.yml`) changes.
+
+---
+
 ### Run Locally
 
 Start only DynamoDB in Docker and run the app from your IDE or terminal:
 
 ```bash
-docker compose up 
+docker compose up
 ```
 
 Then in another terminal:
@@ -109,7 +122,7 @@ Then in another terminal:
 
 This project uses interface-first development with OpenAPI 3.x.
 
-Generate the Java API interfaces and models:
+Generate the Java API interfaces and models (if you didn't already do this during the build step):
 
 ```bash
 ./gradlew generateLibraryApi
@@ -121,7 +134,15 @@ To clean up generated sources:
 ./gradlew cleanOpenApiGenerated
 ```
 
-Run `generateLibraryApi` initially and every time the OpenAPI spec (`spec/libraryservice.yml`) changes.
+---
+
+### Build Docker Image
+
+Build the Library Service Docker image locally using Jib (no Dockerfile needed):
+
+```bash
+./gradlew jibDockerBuild
+```
 
 ---
 
@@ -141,23 +162,6 @@ To stop:
 docker compose down
 ```
 
----
-
-### Build Docker Image
-
-Build the Library Service Docker image locally using Jib (no Dockerfile needed):
-
-```bash
-./gradlew jibDockerBuild
-```
-
-Then run the image manually if desired:
-
-```bash
-docker run --network library_default -p 8080:8080 loudent.project/library:latest
-```
-
----
 
 ## Design Principles
 
