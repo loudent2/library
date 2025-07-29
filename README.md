@@ -205,6 +205,61 @@ View the coverage report:
 ```bash
 open build/reports/jacoco/test/html/index.html
 ```
+---
+
+## 🔥 Smoke Testing the API
+
+You can verify the API behavior using a Python-based smoke test script that simulates user actions like checking out and checking in books.
+
+### ✅ Prerequisites
+
+- Python 3 installed
+- `pip3` available
+- use 'make compose-up` to start a docker container.
+
+### 🧪 Setup
+
+1. **Create a virtual environment**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On macOS/Linux
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   pip install requests
+   ```
+
+3. **Run the smoke test script**:
+   ```bash
+   python smoketest/library_local_smoke_test.py
+   ```
+
+4. **Deactivate the environment** (optional):
+   ```bash
+   deactivate
+   ```
+
+---
+
+### 🔍 What It Tests
+
+The script runs the following scenario using user `ACC123456` and book copies from `"Clean Code"` (`ISBN: 9783333333333`):
+
+- Verify initial user state and catalog availability
+- Check out two books
+- Confirm user now has books and catalog reflects the change
+- Partially check in one book
+- Fully check in the remaining book
+- Confirm everything is back to the original state
+
+Each API call prints:
+- Status code
+- JSON response
+- `✅ SUCCESS` or `❌ FAILURE`
+
+The script exits with status `0` if all tests pass, or `1` if any fail — suitable for CI usage.
+
 
 ---
 
