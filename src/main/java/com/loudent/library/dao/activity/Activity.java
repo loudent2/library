@@ -11,7 +11,7 @@ public class Activity {
   public static final String ISBN_INDEX = "isbn-index";
   public static final String ACCOUNT_INDEX = "account-index";
 
-  private String bookId; // e.g. 9781234567897-2
+  private String bookId;
   private String isbn;
   private String title;
   private String accountNumber;

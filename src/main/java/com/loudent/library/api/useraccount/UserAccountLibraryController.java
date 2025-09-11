@@ -11,13 +11,11 @@ import java.util.concurrent.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Log4j2
-@Validated
 public class UserAccountLibraryController implements UserLibrary {
 
   private final LibraryConfig libraryConfig;

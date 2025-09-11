@@ -4,6 +4,11 @@ info:
 server:
   port: 8080
 spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
   application:
     name: library
   web:
@@ -60,3 +65,33 @@ aws:
   dynamodb:
     region: ${AWS_REGION:us-east-1}
     endpoint: ${AWS_DYNAMODB_ENDPOINT:http://dynamodb-local:8000}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: inttest
+  datasource:
+    url: jdbc:h2:mem:inttestdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  # Adjust as needed
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  level:
+    root: WARN
+    com.loudent.library: DEBUG
+
+# If you use DynamoDB, point at LocalStack or a local endpoint:
+aws:
+  dynamodb:
+    endpoint: ${AWS_DYNAMODB_ENDPOINT:http://localhost:8000}
+    region: ${AWS_REGION:us-east-1}
+
+app:
+  seed-sample-data: true

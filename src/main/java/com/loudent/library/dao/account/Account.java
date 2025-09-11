@@ -8,7 +8,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 @DynamoDbBean
 @Data
 public class Account {
-  public static final String BASE_TABLE_NAME = "Account";
+  public static final String BASE_TABLE_NAME = "Accounts";
   private String accountNumber;
   private String firstName;
   private String lastName;

@@ -26,7 +26,11 @@ ext {
 		aspectj           : '1.9.20.1',
 		awsJavaSdk        : '1.12.783',
 		awsSdkBom         : '2.25.13',
-		googleJavaFormat  : '1.17.0'
+		googleJavaFormat  : '1.17.0',
+		cucumber          : '7.14.0',
+		restAssured       : '5.4.0',
+		junit			  : '5.10.2',
+		testContainers    : '1.19.3'
 	]
 }
 
@@ -41,6 +45,55 @@ repositories {
 	mavenCentral()
 }
 
+test {
+	useJUnitPlatform()
+}
+
+sourceSets {
+	intTest {
+		java.srcDir file('src/intTest/java')
+		resources.srcDir file('src/intTest/resources')
+		compileClasspath += sourceSets.main.output + sourceSets.test.output
+		runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+	}
+}
+
+configurations {
+	intTestImplementation.extendsFrom testImplementation
+	intTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+tasks.register('integrationTest', Test) {
+	useJUnitPlatform()
+	description = 'Runs the integration tests.'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.intTest.output.classesDirs
+	classpath = sourceSets.intTest.runtimeClasspath
+	shouldRunAfter tasks.test
+	systemProperty 'cucumber.filter.tags', project.findProperty('cucumber.tags') ?: ''
+	systemProperty 'spring.profiles.active', project.findProperty('spring.profiles.active') ?: 'inttest'
+	include '**/*Test.class'
+
+	testLogging {
+		events "FAILED", "SKIPPED"
+		exceptionFormat "FULL"
+		showStandardStreams = true
+	}
+
+	reports {
+		junitXml.required = true
+	}
+}
+integrationTest {
+	useJUnitPlatform()
+}
+tasks.named('check') { dependsOn tasks.named('integrationTest') }
+
+tasks.named('processIntTestResources') {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -51,8 +104,11 @@ dependencies {
 	annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
 	testCompileOnly "org.projectlombok:lombok:${versions.lombok}"
 	testAnnotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+	intTestCompileOnly "org.projectlombok:lombok:${versions.lombok}"
+	intTestAnnotationProcessor "org.projectlombok:lombok:${versions.lombok}"
 
 	implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation "org.hibernate.validator:hibernate-validator:${versions.hibernateValidator}"
 	implementation "io.swagger.core.v3:swagger-annotations:${versions.swaggerAnnotations}"
 
@@ -63,11 +119,28 @@ dependencies {
 	implementation "com.amazonaws:aws-java-sdk-dynamodb:${versions.awsJavaSdk}"
 
 	implementation "com.google.guava:guava:${versions.guava}"
-
 	implementation "org.aspectj:aspectjrt:${versions.aspectj}"
 	implementation "org.aspectj:aspectjweaver:${versions.aspectj}"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// Integration tests
+	intTestImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}"
+	intTestRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
+
+	intTestImplementation "io.cucumber:cucumber-java:${versions.cucumber}"
+	intTestImplementation "io.cucumber:cucumber-spring:${versions.cucumber}"
+	intTestImplementation "io.cucumber:cucumber-junit-platform-engine:${versions.cucumber}"
+	intTestImplementation "io.rest-assured:rest-assured:${versions.restAssured}"
+	intTestImplementation "io.rest-assured:json-path:${versions.restAssured}"
+	intTestImplementation "io.rest-assured:xml-path:${versions.restAssured}"
+	intTestImplementation platform("org.junit:junit-bom:${versions.junit}")
+	intTestImplementation "org.junit.platform:junit-platform-suite-api"
+	intTestImplementation "org.junit.platform:junit-platform-suite"
+
+	testImplementation "org.testcontainers:testcontainers:${versions.testContainers}"
+	testImplementation "org.testcontainers:localstack:${versions.testContainers}"
+	testImplementation "org.testcontainers:junit-jupiter:${versions.testContainers}"
 }
 
 configurations.all {
@@ -129,10 +202,6 @@ publishing {
 			version = '1.0.0'
 		}
 	}
-}
-
-test {
-	useJUnitPlatform()
 }
 
 tasks.named('compileTestJava') {

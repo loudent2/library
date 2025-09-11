@@ -110,6 +110,7 @@ public class ActivityService {
 
       Activity activity = new Activity();
       activity.setBookId(bookId);
+      activity.setTitle(title);
       activity.setIsbn(extractIsbn(bookId));
       activity.setAccountNumber(accountNumber);
       activity.setCheckOutDate(now);

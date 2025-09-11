@@ -24,7 +24,7 @@ dynamodb-up:
 
 # Docker Compose: Library + DynamoDB (bridge network)
 compose-up:
-	docker compose --profile library up
+	docker compose --profile library up --build
 
 compose-down:
 	docker compose down

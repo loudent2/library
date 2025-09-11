@@ -93,6 +93,8 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '^[A-Za-z0-9 ._()%+\-]+$'
+            minLength: 1
       responses:
         "200":
           description: User details retrieved successfully
